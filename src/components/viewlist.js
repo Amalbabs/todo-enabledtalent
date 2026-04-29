@@ -5,7 +5,7 @@ import CompleteAlertModal from "./completAlertmodal";
 import DeleteAlertModal from "./deleteAltermodals";
 
 export default function ViewList({ todos, filter, setFilter, onToggle, onDelete, onEdit }) {
-  const [modalType, setModalType] = useState(null); // 'complete' or 'delete'
+  const [modalType, setModalType] = useState(null); 
   const [targetId, setTargetId] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
