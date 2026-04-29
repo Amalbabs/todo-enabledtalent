@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/header";
 import Input from "@/components/input";
 import ViewList from "@/components/viewlist";
@@ -8,6 +8,27 @@ import ViewList from "@/components/viewlist";
 export default function Home() {
   const [todos, setTodos] = useState([]);
   const [filter, setFilter] = useState("Active");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load todos from local storage on mount
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("enabled-talent-todos");
+    if (savedTodos) {
+      try {
+        setTodos(JSON.parse(savedTodos));
+      } catch (e) {
+        console.error("Failed to parse todos from localStorage", e);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save todos to local storage whenever they change
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("enabled-talent-todos", JSON.stringify(todos));
+    }
+  }, [todos, isLoaded]);
 
   const handleAddTodo = (text) => {
     setTodos([
@@ -35,6 +56,15 @@ export default function Home() {
       )
     );
   };
+
+  // Prevent hydration mismatch by not rendering list until loaded
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#cbd5c0] border-t-[#1a6334] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f3f4f6] py-12 px-4 sm:px-6 lg:px-8">
